@@ -1,0 +1,42 @@
+[package]
+name = "system-one-adapter"
+version = "0.1.3"
+edition = "2021"
+rust-version = "1.83"
+description = "Drop-in TypeSafeClient replacement backed by LLM APIs"
+license = "MIT"
+readme = "README.md"
+authors = ["TypeSafe AI <support@typesafe.ai>"]
+keywords = ["typesafe", "llm", "openai", "anthropic"]
+categories = ["api-bindings"]
+
+[features]
+default = ["openai", "anthropic"]
+openai = ["dep:reqwest"]
+anthropic = ["dep:reqwest"]
+
+[dependencies]
+async-trait = "=0.1.83"
+indexmap = { version = "=2.6.0", features = ["serde"] }
+jsonschema = { version = "=0.18.3", default-features = false }
+rand = "=0.8.5"
+reqwest = { version = "=0.11.27", default-features = false, features = ["json", "rustls-tls"], optional = true }
+serde = { version = "=1.0.210", features = ["derive"] }
+serde_json = "=1.0.128"
+thiserror = "=1.0.64"
+tokio = { version = "=1.40.0", features = ["rt", "rt-multi-thread", "time", "macros"] }
+url = "=2.5.2"
+idna = "=0.5.0"
+zeroize = "=1.8.1"
+getrandom = "=0.2.15"
+encoding_rs = "=0.8.34"
+uuid = "=1.11.0"
+time = "=0.3.36"
+deranged = "=0.3.11"
+
+[dev-dependencies]
+approx = "=0.5.1"
+async-trait = "=0.1.83"
+indexmap = { version = "=2.6.0", features = ["serde"] }
+serde_json = "=1.0.128"
+tokio = { version = "=1.40.0", features = ["rt", "macros", "time"] }
