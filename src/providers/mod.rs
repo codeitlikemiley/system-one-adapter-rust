@@ -76,7 +76,7 @@ pub fn build_async_provider<'a>(
 ) -> Result<AsyncModelOwned<'a>, Error> {
     match model {
         AsyncModel::Provider(instance) => Ok(AsyncModelOwned::Borrowed(instance)),
-        SyncModel::Name(name) => {
+        AsyncModel::Name(name) => {
             let Some(provider) = provider else {
                 return Err(Error::Value(MISSING_PROVIDER.into()));
             };
@@ -108,6 +108,82 @@ pub fn build_async_provider<'a>(
                     }
                 }
             }
+        }
+    }
+}
+
+/// A model name or an injected synchronous provider.
+pub enum SyncModel<'a> {
+    Name(String),
+    Provider(&'a dyn Provider),
+}
+
+impl From<String> for SyncModel<'_> {
+    fn from(value: String) -> Self {
+        Self::Name(value)
+    }
+}
+
+impl From<&str> for SyncModel<'_> {
+    fn from(value: &str) -> Self {
+        Self::Name(value.to_string())
+    }
+}
+
+impl<'a, P: Provider + 'a> From<&'a P> for SyncModel<'a> {
+    fn from(value: &'a P) -> Self {
+        Self::Provider(value)
+    }
+}
+
+pub enum SyncModelOwned<'a> {
+    Borrowed(&'a dyn Provider),
+    Owned(Box<dyn Provider + 'a>),
+}
+
+impl SyncModelOwned<'_> {
+    pub fn as_provider(&self) -> &dyn Provider {
+        match self {
+            Self::Borrowed(provider) => *provider,
+            Self::Owned(provider) => provider.as_ref(),
+        }
+    }
+}
+
+/// A model name or an injected asynchronous provider.
+pub enum AsyncModel<'a> {
+    Name(String),
+    Provider(&'a dyn AsyncProvider),
+}
+
+impl From<String> for AsyncModel<'_> {
+    fn from(value: String) -> Self {
+        Self::Name(value)
+    }
+}
+
+impl From<&str> for AsyncModel<'_> {
+    fn from(value: &str) -> Self {
+        Self::Name(value.to_string())
+    }
+}
+
+impl<'a, P: AsyncProvider + 'a> From<&'a P> for AsyncModel<'a> {
+    fn from(value: &'a P) -> Self {
+        Self::Provider(value)
+    }
+}
+
+pub enum AsyncModelOwned<'a> {
+    Borrowed(&'a dyn AsyncProvider),
+    Owned(Box<dyn AsyncProvider + 'a>),
+}
+
+impl AsyncModelOwned<'_> {
+    pub fn as_provider(&self) -> &dyn AsyncProvider {
+        match self {
+            Self::Borrowed(provider) => *provider,
+            Self::Owned(provider) => provider.as_ref(),
         }
     }
 }
