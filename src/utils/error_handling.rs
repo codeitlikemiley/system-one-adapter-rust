@@ -9,14 +9,14 @@ use crate::types::RetryPolicy;
 /// Reason for performing one retry.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct RetryReasons {
-    pub category: RetryCategory;
-    pub msg: String;
+    pub category: RetryCategory,
+    pub msg: String,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum RetryCategory {
-    ProviderError;
-    MalformedStructure;
+    ProviderError,
+    MalformedStructure,
 }
 
 impl RetryCategory {
